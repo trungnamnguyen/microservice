@@ -1,0 +1,63 @@
+# 1. Software Architecture
+
+![4modeladdone.JPG](assets/4modeladdone.JPG?t=1700575734472)
+
+The purpose of each view is as follows:
+
+- **Logical view**—The software elements that are created by developers. In object-oriented languages, these elements are classes and packages. The relations between them are the relationships between classes and packages, including inheritance, associations, and depends-on.
+- **Implementation view**—The output of the build system. This view consists of modules, which represent packaged code, and components, which are executable or deployable units consisting of one or more modules. In Java, a module is a JAR file, and a component is typically a WAR file or an executable JAR file. The relations between them include dependency relationships between modules and composition relationships between components and modules.
+- **Process view**—The components at runtime. Each element is a process, and the relations between processes represent interprocess communication.
+- **Deployment**—How the processes are mapped to machines. The elements in this view consist of (physical or virtual) machines and the processes. The relations between machines represent networking. This view also describes the relationship between processes and machines.
+- **Scenarios**—The description of an architecture is illustrated using a small set of use cases, or scenarios, which become a fifth view. The scenarios describe sequences of interactions between objects and between processes. They are used to identify architectural elements and to illustrate and validate the architecture design. They also serve as a starting point for tests of an architecture prototype. This view is also known as the use case view.
+
+# 2. Architectural styles
+
+#### THE LAYERED ARCHITECTURAL STYLE
+
+A layered architecture organizes software elements into layers. Each layer has a well-defined set of responsibilities. A layered architecture also constraints the dependencies between the layers
+
+The popular three-tier architecture is the layered architecture applied to the logical view. It organizes the application’s classes into the following tiers or layers:
+
+- **Presentation layer**—Contains code that implements the user interface or external APIs
+- **Business logic layer**—Contains the business logic
+- **Persistence layer**—Implements the logic of interacting with the database
+
+The layered architecture is a great example of an architectural style, but it does have some significant drawbacks:
+
+- **Single presentation layer**—It doesn’t represent the fact that an application is likely to be invoked by more than just a single system.
+- **Single persistence layer**—It doesn’t represent the fact that an application is likely to interact with more than just a single database.
+- **Defines the business logic layer as depending on the persistence layer**—In theory, this dependency prevents you from testing the business logic without the database.
+
+#### ABOUT THE HEXAGONAL ARCHITECTURE STYLE
+
+The hexagonal architecture style organizes the logical view in a way that places the business logic at the center. Instead of the presentation layer, the application has one or more *inbound adapters* that handle requests from the outside by invoking the business logic. Similarly, instead of a data persistence tier, the application has one or more *outbound adapters* that are invoked by the business logic and invoke external applications. A key characteristic and benefit of this architecture is that the business logic doesn’t depend on the adapters. Instead, they depend upon it.
+
+![hexaarchitech.JPG](assets/hexaarchitech.JPG?t=1700577745726)
+
+The business logic has one or more ports. A port defines a set of operations and is how the business logic interacts with what’s outside of it. In Java, for example, a port is often a Java interface. There are two kinds of ports: inbound and outbound ports
+
+- An inbound port is an API exposed by the business logic, which enables it to be invoked by external applications. An example of an inbound port is a service interface, which defines a service’s public methods.
+- An outbound port is how the business logic invokes external systems. An example of an output port is a repository interface, which defines a collection of data access operations.
+
+# 3. The microservice architecture is an architectural style
+
+Monolithic architecture is an architectural style that structures the implementation view as a single component: a single executable or WAR file.
+
+The microservice architecture is also an architectural style. It structures the implementation view as a set of multiple components: executables or WAR files. The components are services, and the connectors are the communication protocols that enable those services to collaborate. Each service has its own logical view architecture, which is typically a hexagonal architecture.
+
+#### WHAT IS A SERVICE?
+
+A service is a standalone, independently deployable software component that implements some useful functionality
+A service has an API that provides its clients access to its functionality. There are two types of operations: commands and queries
+
+
+![service.JPG](assets/service.JPG?t=1700581056703)
+
+Each service in a microservice architecture has its own architecture and, potentially, technology stack. But a typical service has a hexagonal architecture. Its API is implemented by adapters that interact with the service’s business logic. The operations adapter invokes the business logic, and the events adapter publishes events emitted by the business logic.
+
+The requirement for services to be loosely coupled and to collaborate only via APIs prohibits services from communicating via a database. You must treat a service’s persistent data like the fields of a class and keep them private. Keeping the data private enables a developer to change their service’s database schema without having to spend time coordinating with developers working on other services. Not sharing database tables also improves runtime isolation. It ensures, for example, that one service can’t hold database locks that block another service. Later on, though, you’ll learn that one downside of not sharing databases is that maintaining data consistency and querying across services are more complex.
+#### WHAT IS LOOSE COUPLING?
+
+#### THE ROLE OF SHARED LIBRARIES
+
+#### THE SIZE OF A SERVICE IS MOSTLY UNIMPORTANT
